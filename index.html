@@ -53,7 +53,69 @@
     =========================================================== -->
     <section id="about" class="content-section is-empty" aria-hidden="true"></section>
     <section id="services" class="content-section is-empty" aria-hidden="true"></section>
-    <section id="contact" class="content-section is-empty" aria-hidden="true"></section>
+
+    <!-- ==========================================================
+         CONTACT / CONTÁCTANOS
+         Submissions are handled by a third-party form-relay service
+         and delivered by email — no backend on this static site.
+         The destination address is intentionally not shown to the
+         visitor. Access key + endpoint are the same proven setup
+         used on eurekawebsites.tech.
+    =========================================================== -->
+    <section id="contact" class="content-section contact-section">
+        <div class="contact-inner">
+            <p class="contact-eyebrow">Contáctanos</p>
+            <h2 class="contact-title">Hablemos de tu proyecto</h2>
+            <p class="contact-lead">
+                Cuéntanos qué necesitas y te responderemos a la brevedad.
+            </p>
+
+            <form id="contactForm" class="contact-form" novalidate
+                  action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="3525af30-710c-4ad5-b601-162c04665abc">
+                <input type="hidden" name="subject" value="Nuevo mensaje desde Enerlab Precision">
+                <input type="hidden" name="from_name" value="Sitio web Enerlab Precision">
+                <input type="hidden" name="redirect" value="false">
+                <!-- honeypot: bots fill this, humans don't see it -->
+                <input type="checkbox" name="botcheck" class="contact-hp" tabindex="-1" autocomplete="off">
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="cf-nombre">Nombre</label>
+                        <input type="text" id="cf-nombre" name="name" required
+                               autocomplete="name" maxlength="120" placeholder="Tu nombre">
+                        <span class="field-error" data-for="cf-nombre"></span>
+                    </div>
+                    <div class="form-field">
+                        <label for="cf-email">Correo electrónico</label>
+                        <input type="email" id="cf-email" name="email" required
+                               autocomplete="email" maxlength="180" placeholder="tucorreo@ejemplo.com">
+                        <span class="field-error" data-for="cf-email"></span>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="cf-tel">Teléfono</label>
+                    <input type="tel" id="cf-tel" name="phone" required
+                           autocomplete="tel" maxlength="40" placeholder="(55) 1234 5678">
+                    <span class="field-error" data-for="cf-tel"></span>
+                </div>
+
+                <div class="form-field">
+                    <label for="cf-msg">Mensaje</label>
+                    <textarea id="cf-msg" name="message" required rows="5"
+                              maxlength="3000" placeholder="¿En qué podemos ayudarte?"></textarea>
+                    <span class="field-error" data-for="cf-msg"></span>
+                </div>
+
+                <button type="submit" class="contact-submit">
+                    <span class="contact-submit-label">Enviar mensaje</span>
+                </button>
+
+                <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+            </form>
+        </div>
+    </section>
 
     <!-- ==========================================================
          FOOTER
@@ -62,6 +124,9 @@
          per instructions (no invented company info).
     =========================================================== -->
     <footer class="site-footer">
+        <p class="footer-nav">
+            <a href="#contact">Contáctanos</a>
+        </p>
         <p class="footer-legal"></p>
         <p class="footer-powered">
             <a href="https://www.eurekawebsites.tech/" target="_blank" rel="noopener noreferrer"><img src="assets/eureka-b-64.png" alt="" style="width:14px;height:14px;display:inline-block;vertical-align:-3px;margin-right:6px;">POWERED BY EUREKA TECH</a>
@@ -69,6 +134,110 @@
     </footer>
 
 </div>
+
+<script>
+/* ==========================================================================
+   Contact form — client-side validation, single-flight submit, and a clear
+   success / error state. Delivery is handled by the same form-relay setup
+   used on eurekawebsites.tech; no provider details are surfaced to visitors.
+   ========================================================================== */
+(function () {
+    var form = document.getElementById('contactForm');
+    if (!form) return;
+
+    var status = document.getElementById('formStatus');
+    var submitBtn = form.querySelector('.contact-submit');
+    var submitLabel = form.querySelector('.contact-submit-label');
+    var defaultLabel = submitLabel.textContent;
+    var sending = false;
+
+    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function fieldError(id, message) {
+        var el = form.querySelector('.field-error[data-for="' + id + '"]');
+        var input = document.getElementById(id);
+        if (el) el.textContent = message || '';
+        if (input) input.classList.toggle('is-invalid', !!message);
+    }
+
+    function clearErrors() {
+        ['cf-nombre', 'cf-email', 'cf-tel', 'cf-msg'].forEach(function (id) {
+            fieldError(id, '');
+        });
+    }
+
+    function validate() {
+        clearErrors();
+        var ok = true;
+        var nombre = form.name.value.trim();
+        var email = form.email.value.trim();
+        var tel = form.phone.value.trim();
+        var msg = form.message.value.trim();
+
+        if (!nombre) { fieldError('cf-nombre', 'Escribe tu nombre.'); ok = false; }
+        if (!email) {
+            fieldError('cf-email', 'Escribe tu correo.'); ok = false;
+        } else if (!EMAIL_RE.test(email)) {
+            fieldError('cf-email', 'Correo no válido.'); ok = false;
+        }
+        if (!tel) {
+            fieldError('cf-tel', 'Escribe tu teléfono.'); ok = false;
+        } else if (tel.replace(/[^0-9]/g, '').length < 7) {
+            fieldError('cf-tel', 'Teléfono no válido.'); ok = false;
+        }
+        if (!msg) { fieldError('cf-msg', 'Escribe un mensaje.'); ok = false; }
+
+        return ok;
+    }
+
+    function setStatus(kind, text) {
+        status.textContent = text;
+        status.className = 'form-status' + (kind ? ' is-' + kind : '');
+    }
+
+    function setSending(on) {
+        sending = on;
+        submitBtn.disabled = on;
+        form.setAttribute('aria-busy', on ? 'true' : 'false');
+        submitLabel.textContent = on ? 'Enviando…' : defaultLabel;
+    }
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (sending) return;
+
+        setStatus('', '');
+        if (!validate()) {
+            setStatus('error', 'Revisa los campos marcados.');
+            return;
+        }
+
+        setSending(true);
+
+        fetch(form.action, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' },
+            body: new FormData(form)
+        })
+            .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
+            .then(function (res) {
+                if (res.ok && res.d && res.d.success) {
+                    form.reset();
+                    clearErrors();
+                    setStatus('success', '¡Gracias! Tu mensaje fue enviado. Te contactaremos pronto.');
+                } else {
+                    setStatus('error', 'No se pudo enviar tu mensaje. Intenta de nuevo en un momento.');
+                }
+            })
+            .catch(function () {
+                setStatus('error', 'No se pudo enviar tu mensaje. Revisa tu conexión e intenta de nuevo.');
+            })
+            .finally(function () {
+                setSending(false);
+            });
+    });
+})();
+</script>
 
 </body>
 </html>

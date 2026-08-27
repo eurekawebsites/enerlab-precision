@@ -25,11 +25,31 @@ No build step, no framework, no dependencies. Plain HTML/CSS, deployed as-is.
 
 ## Content status
 
-The client has not provided company content yet. `index.html` already has
-empty, ready-to-fill section anchors (`#about`, `#services`, `#contact`) and
-a reserved (currently empty) legal/registration line in the footer — see the
-comments in `index.html` for exactly how to activate each one once real copy
-arrives. No placeholder or invented text was added anywhere.
+The client has not provided company content yet. `index.html` still has
+empty, ready-to-fill section anchors (`#about`, `#services`) and a reserved
+(currently empty) legal/registration line in the footer — see the comments
+in `index.html` for exactly how to activate each one once real copy arrives.
+No placeholder or invented text was added anywhere.
+
+### Contact section (active)
+
+`#contact` ("Contáctanos") is live: a Nombre / Correo electrónico / Teléfono
+/ Mensaje form with client-side validation, a single-flight submit (button
+disables + shows "Enviando…" while sending), and explicit success / error
+states. It styles itself from the same brand tokens and spacing system as
+the rest of the page.
+
+Submissions are relayed by [Web3Forms](https://web3forms.com) (no backend on
+this static site) and delivered by email. The `access_key` in the form is
+**intentionally the shared Eureka contact-form key** — the same setup proven
+on eurekawebsites.tech — so messages currently land in Eureka's inbox. Swap
+`access_key` (and the hidden `subject`) for Enerlab's own Web3Forms key once
+their contact address / onboarding is finalized; nothing else needs to
+change. The provider is never named in any visitor-facing text.
+
+Note: Web3Forms rejects cross-origin requests from `localhost` / unknown
+origins, so the live success path only works from the deployed domain — test
+there, not from a local file server.
 
 ## Local preview
 
