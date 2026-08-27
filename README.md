@@ -40,12 +40,12 @@ states. It styles itself from the same brand tokens and spacing system as
 the rest of the page.
 
 Submissions are relayed by [Web3Forms](https://web3forms.com) (no backend on
-this static site) and delivered by email. The `access_key` in the form is
-**intentionally the shared Eureka contact-form key** — the same setup proven
-on eurekawebsites.tech — so messages currently land in Eureka's inbox. Swap
-`access_key` (and the hidden `subject`) for Enerlab's own Web3Forms key once
-their contact address / onboarding is finalized; nothing else needs to
-change. The provider is never named in any visitor-facing text.
+this static site) and delivered by email, using the same proven setup as
+eurekawebsites.tech. The form carries **Enerlab's own dedicated Web3Forms
+access key**; the recipient inbox is configured in the Web3Forms dashboard
+for that key. The hidden `subject` / `from_name` identify submissions as
+coming from the Enerlab Precision site. The provider is never named in any
+visitor-facing text.
 
 Note: Web3Forms rejects cross-origin requests from `localhost` / unknown
 origins, so the live success path only works from the deployed domain — test
