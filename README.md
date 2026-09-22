@@ -61,19 +61,10 @@ npx serve .
 
 ## Deployment
 
-Hosted on **GitHub Pages**, serving from the `main` branch root.
+Primary hosting is **Firebase Hosting**.
 
 Repo: https://github.com/eurekawebsites/enerlab-precision
-Live: https://eurekawebsites.github.io/enerlab-precision/
+Firebase staging/live host: https://enerlab-precision.web.app/
+Production custom domain: https://enerlab.org/ (DNS cutover to Firebase pending)
 
-### Moving to a custom domain later
-
-1. Add a `CNAME` file at the repo root containing just the domain
-   (e.g. `www.enerlabprecision.com`), OR set the custom domain in
-   Settings → Pages → Custom domain (GitHub writes the `CNAME` file for you).
-2. Point the domain's DNS at GitHub Pages (an `A`/`ALIAS` record to GitHub's
-   IPs for an apex domain, or a `CNAME` record to
-   `eurekawebsites.github.io` for a `www` subdomain).
-3. No changes to `index.html` or asset paths are needed — every path in this
-   project is relative, so it works identically under
-   `/enerlab-precision/` and under a bare custom domain root.
+GitHub Pages remains enabled temporarily as a rollback fallback during the migration. Do not treat the old GitHub Pages URL as the canonical public URL.
